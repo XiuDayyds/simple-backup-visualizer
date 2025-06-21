@@ -42,17 +42,40 @@
 
 ### 🎯 一键启动 (推荐)
 
-**Windows用户：**
+#### **方式1：PowerShell脚本（推荐）**
+适用于Windows 10/11，解决编码问题：
+```powershell
+# 右键点击项目文件夹，选择"在此处打开PowerShell窗口"
+# 或在PowerShell中进入项目目录后运行：
+.\启动.ps1
+```
+
+#### **方式2：批处理文件**
+适用于Windows：
 ```bash
 # 双击运行
 启动.bat
 ```
 
-**Linux/Mac用户：**
+#### **方式3：Shell脚本**
+适用于Linux/Mac：
 ```bash
 # 赋予执行权限并运行
 chmod +x 启动.sh
 ./启动.sh
+```
+
+### 🔧 手动启动（开发者）
+如果自动脚本遇到问题：
+```bash
+# 1. 安装依赖
+npm install
+cd client && npm install
+cd ../server && npm install
+cd ..
+
+# 2. 启动应用
+npm run dev
 ```
 
 ### 📋 系统要求
@@ -64,15 +87,22 @@ chmod +x 启动.sh
 
 ### ⚡ 首次运行
 
-1. **克隆项目**
+1. **获取项目**
    ```bash
-   git clone https://github.com/your-username/simple-backup-visualizer.git
+   # 方式1：Git克隆（推荐）
+   git clone https://github.com/XiuDayyds/simple-backup-visualizer.git
    cd simple-backup-visualizer
+   
+   # 方式2：下载ZIP
+   # 访问GitHub页面 → Code → Download ZIP → 解压
    ```
 
 2. **一键启动**
    ```bash
-   # Windows
+   # Windows（推荐PowerShell）
+   .\启动.ps1
+   
+   # Windows（批处理）
    启动.bat
    
    # Linux/Mac
@@ -82,6 +112,48 @@ chmod +x 启动.sh
 3. **访问应用**
    - 🌐 前端界面: http://localhost:5173
    - 🔧 后端API: http://localhost:3000
+
+## 🔧 常见问题解决
+
+### ❌ **启动脚本出现乱码**
+**问题**: Windows批处理文件显示乱码字符
+
+**解决方案**:
+1. **使用PowerShell脚本（推荐）**:
+   ```powershell
+   .\启动.ps1
+   ```
+
+2. **手动启动**:
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+3. **修改PowerShell执行策略**（如果需要）:
+   ```powershell
+   # 以管理员身份运行PowerShell
+   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+   ```
+
+### 🌐 **网络相关问题**
+**npm安装失败**:
+```bash
+# 使用国内镜像
+npm config set registry https://registry.npmmirror.com/
+
+# 或使用cnpm
+npm install -g cnpm
+cnpm install
+```
+
+### 📝 **权限问题**
+**Windows**: 右键选择"以管理员身份运行"
+**Linux/Mac**: 使用`sudo`权限
+
+### 🔌 **端口占用**
+**前端端口5173被占用**: 修改`client/vite.config.ts`
+**后端端口3000被占用**: 修改`server/.env`中的`PORT`
 
 ## 📖 使用指南
 
@@ -179,7 +251,9 @@ simple-backup-visualizer/
 │   ├── uploads/                 # 上传文件临时存储
 │   ├── output/                  # 生成文件输出
 │   └── temp/                    # 临时文件处理
-├── 🚀 启动.bat / 启动.sh        # 一键启动脚本
+├── 🚀 启动.ps1                 # PowerShell启动脚本（推荐）
+├── 🚀 启动.bat                 # Windows批处理启动脚本
+├── 🚀 启动.sh                  # Linux/Mac Shell启动脚本
 ├── 📝 package.json             # 项目配置
 └── 📖 README.md
 ```
@@ -284,7 +358,7 @@ npm run clean
 ## 📞 联系方式
 
 - 🐙 GitHub: [@铮烬](https://github.com/XiuDayyds)
-- 💬 Simple平台: [@铮烬](https://simple.imsummer.cn/shareFriend?id=ca57f94d-7707-4093-8ffa-4bda63b6a8b9 )
+- 💬 Simple平台: [@铮烬](https://simple.imsummer.cn/shareFriend?id=ca57f94d-7707-4093-8ffa-4bda63b6a8b9)
 
 ---
 
