@@ -26,7 +26,7 @@ export default function Header() {
           {/* 右侧链接 */}
           <div className="flex items-center ml-2">
             <a
-              href="https://github.com"
+              href="https://github.com/XiuDayyds/simple-backup-visualizer"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200 touch-manipulation"
