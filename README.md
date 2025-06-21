@@ -70,8 +70,10 @@ chmod +x 启动.sh
 ```bash
 # 1. 安装依赖
 npm install
-cd client && npm install
-cd ../server && npm install
+cd client
+pm install
+cd ../server
+npm install
 cd ..
 
 # 2. 启动应用
@@ -352,8 +354,8 @@ npm run clean
 
 ## 🎖️ 特别鸣谢
 
-- **Simple平台** - 优秀的记录分享平台
-- **守望者用户铮烬** - 项目发起和需求提供
+- [**Simple平台**](https://apps.apple.com/cn/app/simple-%E5%8D%95%E7%BA%AF%E4%BA%A4%E4%B8%AA%E6%9C%8B%E5%8F%8B/id6714463207) - 感谢平台提供的服务器
+- **守望者用户铮烬** - 项目发起和辅助AI
 
 ## 📞 联系方式
 
