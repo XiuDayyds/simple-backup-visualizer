@@ -1,0 +1,11 @@
+name: diary-to-pdf
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - git
+  - curl
+  - pip
+  - pip:
+    - python-dotenv 
