@@ -12,10 +12,14 @@ import dotenv from 'dotenv';
 import pdfRoutes from './routes/pdf';
 import healthRoutes from './routes/health';
 import progressRoutes from './routes/progress';
+import cleanupRoutes from './routes/cleanup';
 
 // 导入日志系统
 import { logger } from './utils/logger';
 import { requestLogger, errorLogger } from './middleware/requestLogger';
+
+// 导入文件清理服务
+import { getCleanupService } from './services/fileCleanupService';
 
 // 加载环境变量
 dotenv.config();
@@ -85,6 +89,7 @@ app.use('/downloads', express.static(outputDir));
 // API路由
 app.use('/api/status', healthRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/cleanup', cleanupRoutes);
 app.use('/api', pdfRoutes);
 
 // 404处理
@@ -98,14 +103,25 @@ app.use('*', (req, res) => {
 // 全局错误处理
 app.use(errorLogger);
 
+// 初始化文件清理服务
+const cleanupService = getCleanupService({
+  outputDir: outputDir,
+  tempDir: tempDir,
+  maxAge: parseInt(process.env.CLEANUP_MAX_AGE || '1800000'), // 默认30分钟
+  interval: parseInt(process.env.CLEANUP_INTERVAL || '300000'), // 默认5分钟检查一次
+  enabled: process.env.CLEANUP_ENABLED !== 'false' // 默认启用
+});
+
 // 优雅关闭
 process.on('SIGTERM', () => {
   logger.info('收到SIGTERM信号，正在关闭服务器...');
+  cleanupService.stop();
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
   logger.info('收到SIGINT信号，正在关闭服务器...');
+  cleanupService.stop();
   process.exit(0);
 });
 
@@ -117,6 +133,9 @@ app.listen(PORT, () => {
   logger.info(`🗂️  临时目录: ${tempDir}`);
   logger.info(`🌍 环境: ${process.env.NODE_ENV || 'development'}`);
   logger.info(`📋 日志文件开启: ${process.env.ENABLE_LOG_FILE === 'true' ? '是' : '否'}`);
+  
+  // 启动文件清理服务
+  cleanupService.start();
 });
 
 export default app; 
