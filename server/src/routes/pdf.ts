@@ -5,7 +5,9 @@ import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { generatePDF } from '../services/pdfGeneratorOptimized';
 import { generateHTML } from '../services/htmlGenerator';
+import { generateHTMLOptimized } from '../services/htmlGeneratorOptimized';
 import { processMedia, cleanupMedia } from '../services/mediaProcessor';
+import { processMediaOptimized, cleanupMediaOptimized } from '../services/mediaProcessorOptimized';
 import { validateDiaryData } from '../utils/dataValidator';
 import { emitComplete } from './progress';
 import { ProgressManager } from '../utils/progressManager';
@@ -210,12 +212,12 @@ router.post('/generate-pdf', upload.single('diaryFile'), async (req: Request, re
     // Process stage for media
     progressManager.nextStage('process');
 
-    // 处理媒体文件（图片和音频）
+    // 处理媒体文件（图片和音频）- 使用优化版本
     let processedData = jsonData;
     if (options.includeImages !== false || options.includeAudio !== false) {
       console.log(`${jobId}: 开始处理媒体文件...`);
       try {
-        processedData = await processMedia(jsonData, jobId, progressManager);
+        processedData = await processMediaOptimized(jsonData, jobId, progressManager);
         console.log(`${jobId}: 媒体文件处理成功`);
       } catch (error) {
         console.error(`${jobId}: 媒体文件处理失败`, error);
@@ -273,9 +275,9 @@ router.post('/generate-pdf', upload.single('diaryFile'), async (req: Request, re
     // 清理临时文件
     fs.unlinkSync(req.file.path);
     
-    // 清理媒体文件
+    // 清理媒体文件 - 使用优化版本
     try {
-      await cleanupMedia(jobId);
+      await cleanupMediaOptimized(jobId);
     } catch (cleanupError) {
       console.warn(`${jobId}: 清理媒体文件失败`, cleanupError);
       // 不影响主流程
@@ -477,12 +479,12 @@ router.post('/generate-html', upload.single('diaryFile'), async (req: Request, r
     // Process stage for media
     progressManager.nextStage('process');
     
-    // 处理媒体文件（图片和音频）
+    // 处理媒体文件（图片和音频）- 使用优化版本
     let processedData = jsonData;
     if (options.includeImages !== false || options.includeAudio !== false) {
       console.log(`${jobId}: 开始处理媒体文件...`);
       try {
-        processedData = await processMedia(jsonData, jobId, progressManager);
+        processedData = await processMediaOptimized(jsonData, jobId, progressManager);
         console.log(`${jobId}: 媒体文件处理成功`);
       } catch (error) {
         console.error(`${jobId}: 媒体文件处理失败`, error);
@@ -493,12 +495,12 @@ router.post('/generate-html', upload.single('diaryFile'), async (req: Request, r
     
     progressManager.completeStage();
 
-    // 生成HTML - Pass the progressManager
+    // 生成HTML - 使用优化版本
     console.log(`${jobId}: 开始生成HTML...`);
     let htmlPath;
     try {
-      // The generateHTML will handle generate and finalize stages
-      htmlPath = await generateHTML(processedData, options, jobId, progressManager);
+      // The generateHTMLOptimized will handle generate and finalize stages
+      htmlPath = await generateHTMLOptimized(processedData, options, jobId, progressManager);
       console.log(`${jobId}: HTML生成成功: ${htmlPath}`);
     } catch (error) {
       console.error(`${jobId}: HTML生成失败`, error);
@@ -538,9 +540,9 @@ router.post('/generate-html', upload.single('diaryFile'), async (req: Request, r
     // 清理临时文件
     fs.unlinkSync(req.file.path);
     
-    // 清理媒体文件
+    // 清理媒体文件 - 使用优化版本
     try {
-      await cleanupMedia(jobId);
+      await cleanupMediaOptimized(jobId);
     } catch (cleanupError) {
       console.warn(`${jobId}: 清理媒体文件失败`, cleanupError);
       // 不影响主流程
