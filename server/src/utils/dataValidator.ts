@@ -1,6 +1,7 @@
 interface DiaryEntry {
   date: string;
   content?: string;
+  music?: string;
   collection?: string;
   album?: Array<{ type: string; url: string }>;
   audio?: string;
@@ -63,8 +64,8 @@ export function validateDiaryData(data: any): ValidationResult {
       }
 
       // content字段是可选的，但如果没有content，必须有album或audio
-      if (!entry.content && !entry.album && !entry.audio) {
-        errors.push(`第${i + 1}条记录必须至少包含content、album或audio中的一个`);
+      if (!entry.content && !entry.music && !entry.album && !entry.audio) {
+        errors.push(`第${i + 1}条记录必须至少包含content、music、album或audio中的一个`);
         continue;
       }
 
@@ -83,7 +84,7 @@ export function validateDiaryData(data: any): ValidationResult {
         } else {
           // 统计图片和视频数量
           const hasImages = entry.album.some((item: any) => item.type === 'image');
-          const hasVideos = entry.album.some((item: any) => item.type === 'video');
+          const hasVideos = entry.album.some((item: any) => item.type === 'video' || item.type === 'live_photo');
           
           if (hasImages) statistics.withImages++;
           if (hasVideos) statistics.withVideos++;
@@ -92,8 +93,8 @@ export function validateDiaryData(data: any): ValidationResult {
           entry.album.forEach((item: any, idx: number) => {
             if (!item.type || !item.url) {
               errors.push(`第${i + 1}条记录的album[${idx}]缺少type或url字段`);
-            } else if (!['image', 'video'].includes(item.type)) {
-              errors.push(`第${i + 1}条记录的album[${idx}]的type字段必须是'image'或'video'`);
+            } else if (!['image', 'video', 'live_photo'].includes(item.type)) {
+              errors.push(`第${i + 1}条记录的album[${idx}]的type字段必须是'image'或'video'或'live_photo'`);
             }
           });
         }

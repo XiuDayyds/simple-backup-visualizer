@@ -1,4 +1,4 @@
-import { DiaryEntry, ProcessedDiaryEntry, GroupedDiaryData } from '@/types/diary';
+import { DiaryEntry, ProcessedDiaryEntry, GroupedDiaryData, MediaItem } from '@/types/diary';
 
 /**
  * 格式化日期字符串（包含时间）
@@ -48,6 +48,22 @@ export function getYearMonthTitle(yearMonth: string): string {
   }
 }
 
+// /**
+//  * 处理单个日记条目
+//  */
+// export function processDiaryEntry(entry: DiaryEntry): ProcessedDiaryEntry {
+//   const formattedDate = formatDate(entry.date);
+//   const yearMonth = getYearMonth(entry.date);
+//   const timestamp = new Date(entry.date).getTime();
+// 
+//   return {
+//     ...entry,
+//     formattedDate,
+//     yearMonth,
+//     timestamp,
+//   };
+// }
+
 /**
  * 处理单个日记条目
  */
@@ -56,8 +72,21 @@ export function processDiaryEntry(entry: DiaryEntry): ProcessedDiaryEntry {
   const yearMonth = getYearMonth(entry.date);
   const timestamp = new Date(entry.date).getTime();
 
+  // 1️⃣ 拼接 music 到 content
+  const content = [entry.content ?? '', entry.music ?? ''].filter(Boolean).join('\n');
+
+  // 2️⃣ 处理 album 中 live_photo → video
+  const album: MediaItem[] = entry.album?.map(item => {
+    if (item.type === 'live_photo') {
+      return { ...item, type: 'video' };
+    }
+    return item;
+  }) || [];
+
   return {
     ...entry,
+    content,
+    album,
     formattedDate,
     yearMonth,
     timestamp,
@@ -127,8 +156,8 @@ export function validateDiaryData(data: any): string | null {
     }
     
     // 允许在有album或audio的情况下缺少content字段
-    if (!entry.content && !entry.album && !entry.audio) {
-      return `第${i + 1}条记录缺少内容：需要至少包含content、album或audio字段之一`;
+    if (!entry.content && !entry.music && !entry.album && !entry.audio) {
+      return `第${i + 1}条记录缺少内容：需要至少包含content、music、album或audio字段之一`;
     }
     
     // 验证album格式（如果存在）
@@ -151,7 +180,7 @@ export function validateDiaryData(data: any): string | null {
 export function getDataStatistics(entries: ProcessedDiaryEntry[]) {
   const totalEntries = entries.length;
   const withImages = entries.filter(e => e.album && e.album.some(item => item.type === 'image')).length;
-  const withVideos = entries.filter(e => e.album && e.album.some(item => item.type === 'video')).length;
+  const withVideos = entries.filter(e => e.album && e.album.some(item => item.type === 'video' || item.type === 'live_photo')).length;
   const withAudio = entries.filter(e => e.audio).length;
   const withTags = entries.filter(e => e.tags && e.tags.length > 0).length;
   const withCollections = entries.filter(e => e.collection).length;

@@ -1,7 +1,8 @@
 // 日记数据的基本类型定义
 export interface DiaryEntry {
   date: string;
-  content: string;
+  content?: string;
+  music?: string;
   collection?: string;
   album?: MediaItem[];
   audio?: string;
@@ -10,7 +11,7 @@ export interface DiaryEntry {
 
 // 媒体项类型
 export interface MediaItem {
-  type: 'image' | 'video';
+  type: 'image' | 'video' | 'live_photo';
   url: string;
 }
 

@@ -3,7 +3,7 @@ import { PDFGenerationOptions, GeneratePDFResponse, UploadProgress, DocumentGene
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/backup/moment/api',
   timeout: 120000, // 120秒超时
   headers: {
     'Content-Type': 'application/json',
