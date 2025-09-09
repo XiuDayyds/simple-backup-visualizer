@@ -65,4 +65,10 @@ Thumbs.db
 11.json
 11 copy.json
 *.backup.json
-*备份*.json 
+*备份*.json
+
+# 测试数据文件
+test_data_*.json
+
+# 临时和无关文件
+nul 
